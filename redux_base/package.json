@@ -1,5 +1,5 @@
 {
-  "name": "old-local-blog",
+  "name": "redux_base",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -50,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@types/estree": "^1.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
