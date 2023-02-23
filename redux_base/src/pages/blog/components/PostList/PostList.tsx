@@ -1,14 +1,28 @@
-import { deletePost, startEditingPost } from 'pages/blog/blog.reducer'
+import { deletePost, getPostList, startEditingPost } from 'pages/blog/blog.reducer'
+import { Fragment, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'store'
+import { RootState, useAppDispath } from 'store'
+import http from 'utils/http'
 import PostItem from '../PostItem'
+import SkeletonPost from '../SkeletonPost'
 
 export default function PostList() {
   const postList = useSelector((state: RootState) => {
     console.log('state', state)
     return state.blog.postList
   })
-  const dispatch = useDispatch()
+
+  const loading = useSelector((state: RootState) => state.blog.loading)
+
+  const dispatch = useAppDispath()
+
+  // use createAsyncThunk
+  useEffect(() => {
+    const promise = dispatch(getPostList())
+    return () => {
+      promise.abort()
+    }
+  }, [dispatch])
 
   const handleDelete = (postId: string) => {
     dispatch(deletePost(postId))
@@ -26,9 +40,16 @@ export default function PostList() {
           </p>
         </div>
         <div className='grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-2 xl:grid-cols-2 xl:gap-8'>
-          {postList.map((post) => (
-            <PostItem post={post} handleDelete={handleDelete} handleStartEditing={handleStartEditing} key={post.id} />
-          ))}
+          {loading && (
+            <Fragment>
+              <SkeletonPost />
+              <SkeletonPost />
+            </Fragment>
+          )}
+          {!loading &&
+            postList.map((post) => (
+              <PostItem post={post} key={post.id} handleDelete={handleDelete} handleStartEditing={handleStartEditing} />
+            ))}
         </div>
       </div>
     </div>
